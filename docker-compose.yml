@@ -1,0 +1,42 @@
+version: '3'
+services:
+    mysql-container:
+      image: mysql:5.7
+      environment:
+        - MYSQL_ROOT_PASSWORD=password
+      volumes:
+        - db_data:/var/lib/mysql
+      networks:
+        - service-tier
+      container_name: ${CONTAINER_NAME}_sql
+
+    booth-service:
+      image: booth-backend
+      environment:
+        - SPRING_DATASOURCE_URL=jdbc:mysql://${CONTAINER_NAME}_sql:3306/booth?createDatabaseIfNotExist=true&useSSL=false
+        - SPRING_DATASOURCE_PASSWORD=password
+        - SPRING_CLOUD_VAULT_HOST=vault
+      ports:
+        - '5792:5792'
+      networks:
+      - service-tier
+      restart: on-failure
+      depends_on:
+        - mysql-container
+
+    booth-frontend:
+      image: booth-frontend
+      ports:
+        - ${CONTAINER_PORT}:80
+      depends_on:
+        - booth-service
+      environment:
+        - CONTAINER_URL=${CONTAINER_NAME}
+        - API_URL=/api
+volumes:
+  db_data:
+
+networks:
+  service-tier:
+    name: service-tier
+    external: true
