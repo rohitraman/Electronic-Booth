@@ -16,6 +16,11 @@ services:
         - SPRING_DATASOURCE_URL=jdbc:mysql://${CONTAINER_NAME}_sql:3306/booth?createDatabaseIfNotExist=true&useSSL=false
         - SPRING_DATASOURCE_PASSWORD=password
         - SPRING_CLOUD_VAULT_HOST=vault
+        - BLOCKCHAIN_VIEW_URL=http://host.docker.internal:5790/getAllVotes
+        - BLOCKCHAIN_VOTE_URL=http://host.docker.internal:5790/vote
+        - NOMINEE_VOTE_TOKEN_URL=http://host.docker.internal:5790/authenticate
+        - NOMINEE_TOKEN_URL=http://host.docker.internal:5792/authenticate
+        - ADMIN_VIEW_NOMINEES=http://host.docker.internal:5792/nominee/getNomineeByCity
       ports:
         - '5791:5791'
       networks:
