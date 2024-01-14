@@ -1,19 +1,7 @@
 pipeline {
     agent any
     
-    environment {
-        CONTAINER_NAME='%city%'
-        CONTAINER_PORT='%port%'
-    }
     stages {
-        stage('Print') {
-            steps {
-                script {
-                    bat 'echo %CONTAINER_PORT%'
-                    bat 'echo %CONTAINER_NAME%'
-                }
-            }
-        }
         stage('Build') {
             steps {
                 script {
@@ -29,11 +17,21 @@ pipeline {
                 }
             }
         }
+        stage ('Update .env') {
+            steps {
+                script {
+                    bat 'rm .env'
+                }
 
+                script {
+                    bat "echo 'CONTAINER_NAME=%city% CONTAINER_PORT=%port%' >> .env" 
+                }
+            }
+        }
         stage ('Run Docker image') {
             steps {
                 script {
-                    bat 'CONTAINER_NAME=%city% CONTAINER_PORT=%port% docker-compose -p %city% up -d '
+                    bat 'docker-compose -p %city% up -d'
                 }
             }
         }
