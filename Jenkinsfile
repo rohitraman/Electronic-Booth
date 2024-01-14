@@ -18,6 +18,11 @@ pipeline {
             }
         }
 
+        environment {
+            CONTAINER_NAME='%city%'
+            CONTAINER_PORT='%port%'
+        }
+
         stage ('Run Docker image') {
             steps {
                 script {
