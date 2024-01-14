@@ -33,7 +33,7 @@ pipeline {
         stage ('Run Docker image') {
             steps {
                 script {
-                    bat 'docker-compose -p %city% up -d '
+                    bat 'CONTAINER_NAME=%city% CONTAINER_PORT=%port% docker-compose -p %city% up -d '
                 }
             }
         }
