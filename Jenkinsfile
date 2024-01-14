@@ -9,7 +9,7 @@ pipeline {
         stage('Print') {
             steps {
                 script {
-                    bat 'echo %port%'
+                    bat 'echo $CONTAINER_PORT'
                 }
             }
         }
