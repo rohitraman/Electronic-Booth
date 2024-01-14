@@ -6,6 +6,13 @@ pipeline {
         CONTAINER_PORT='%port%'
     }
     stages {
+        stage('Print') {
+            steps {
+                script {
+                    bat 'echo %port%'
+                }
+            }
+        }
         stage('Build') {
             steps {
                 script {
