@@ -23,6 +23,7 @@ services:
       restart: on-failure
       depends_on:
         - mysql-container
+      container_name: ${CONTAINER_NAME}
 
     booth-frontend:
       image: booth-frontend
