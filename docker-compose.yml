@@ -17,7 +17,7 @@ services:
         - SPRING_DATASOURCE_PASSWORD=password
         - SPRING_CLOUD_VAULT_HOST=vault
       ports:
-        - '5792:5792'
+        - '5791:5791'
       networks:
       - service-tier
       restart: on-failure
