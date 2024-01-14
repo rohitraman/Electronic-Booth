@@ -1,6 +1,10 @@
 pipeline {
     agent any
     
+    environment {
+        CONTAINER_NAME='%city%'
+        CONTAINER_PORT='%port%'
+    }
     stages {
         stage('Build') {
             steps {
@@ -16,11 +20,6 @@ pipeline {
                     bat 'docker build -t booth-backend .'
                 }
             }
-        }
-
-        environment {
-            CONTAINER_NAME='%city%'
-            CONTAINER_PORT='%port%'
         }
 
         stage ('Run Docker image') {
