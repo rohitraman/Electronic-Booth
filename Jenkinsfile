@@ -24,7 +24,11 @@ pipeline {
                 }
 
                 script {
-                    bat "echo CONTAINER_NAME=%city% CONTAINER_PORT=%port% >> .env" 
+                    bat "echo CONTAINER_NAME=%city% >> .env" 
+                }
+
+                script {
+                    bat "echo CONTAINER_PORT=%port% >> .env" 
                 }
             }
         }
