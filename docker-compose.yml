@@ -36,6 +36,8 @@ services:
         - PUBLIC_URL=/api
         - CITY=${CONTAINER_NAME}
       restart: on-failure
+      networks:
+      - service-tier
 volumes:
   db_data:
 
