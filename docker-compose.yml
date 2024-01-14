@@ -21,8 +21,6 @@ services:
         - NOMINEE_VOTE_TOKEN_URL=http://host.docker.internal:5790/authenticate
         - NOMINEE_TOKEN_URL=http://host.docker.internal:5792/authenticate
         - ADMIN_VIEW_NOMINEES=http://host.docker.internal:5792/nominee/getNomineeByCity
-      ports:
-        - '5791:5791'
       networks:
       - service-tier
       restart: on-failure
@@ -40,8 +38,8 @@ services:
         - booth-service
       environment:
         - CONTAINER_URL=${CONTAINER_NAME}
-        - PUBLIC_URL=/api
-        - CITY=${CONTAINER_NAME}
+        - VITE_PUBLIC_URL=/api
+        - VITE_CITY=${CONTAINER_NAME}
       restart: on-failure
       networks:
       - service-tier
