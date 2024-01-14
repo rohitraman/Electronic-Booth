@@ -20,11 +20,11 @@ pipeline {
         stage ('Update .env') {
             steps {
                 script {
-                    bat 'rm .env'
+                    bat 'del .env'
                 }
 
                 script {
-                    bat "echo 'CONTAINER_NAME=%city% CONTAINER_PORT=%port%' >> .env" 
+                    bat "echo CONTAINER_NAME=%city% CONTAINER_PORT=%port% >> .env" 
                 }
             }
         }
