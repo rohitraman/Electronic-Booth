@@ -24,4 +24,9 @@ public class Response {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "Response [obj=" + obj + ", status=" + status + "]";
+    }
 }
