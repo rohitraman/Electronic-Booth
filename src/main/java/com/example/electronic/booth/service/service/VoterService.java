@@ -135,6 +135,7 @@ public class VoterService implements VoterInterface {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         httpHeaders.add("Authorization", "Bearer " + getToken());
+        System.out.println("Here");
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
         return restTemplate.exchange(viewNomineesURL + "?city=" + city, HttpMethod.GET, httpEntity, Response.class);
