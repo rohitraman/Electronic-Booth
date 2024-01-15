@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Component
@@ -19,7 +21,7 @@ public class TokenManager implements Serializable {
     /**
      *
      */
-    private static final Duration JWT_TOKEN_VALIDITY = Duration.ofMinutes(900);
+    private static final Duration JWT_TOKEN_VALIDITY = Duration.ofMinutes(30);
 
     private Algorithm hmac512;
     private JWTVerifier verifier;
@@ -31,7 +33,10 @@ public class TokenManager implements Serializable {
     }
 
     public String generateToken(final UserDetails userDetails) {
-        final Instant now = Instant.now();
+        ZoneId zoneId = ZoneId.of("Asia/Kolkata");
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
+        
+        final Instant now = zonedDateTime.toInstant();
         return JWT.create()
                 .withSubject(userDetails.getUsername())
                 .withIssuer("app")
