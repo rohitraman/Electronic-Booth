@@ -64,7 +64,9 @@ public class VoterController {
         if (!username.equals(id)) {
             return new ResponseEntity<>(new Response("Unauthorized", 401), HttpStatus.UNAUTHORIZED);
         }
-        return voterInterface.getNomineesByCity(city);
+        ResponseEntity<Response> responseEntity = voterInterface.getNomineesByCity(city);
+        System.out.println(responseEntity.getStatusCode() + " " + responseEntity.getBody().toString());
+        return responseEntity;
     }
 
     @DeleteMapping("/deleteVoter")
