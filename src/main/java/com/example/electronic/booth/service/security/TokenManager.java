@@ -19,7 +19,7 @@ public class TokenManager implements Serializable {
     /**
      *
      */
-    private static final Duration JWT_TOKEN_VALIDITY = Duration.ofMinutes(30);
+    private static final Duration JWT_TOKEN_VALIDITY = Duration.ofMinutes(360);
 
     private Algorithm hmac512;
     private JWTVerifier verifier;
