@@ -33,10 +33,7 @@ public class TokenManager implements Serializable {
     }
 
     public String generateToken(final UserDetails userDetails) {
-        ZoneId zoneId = ZoneId.of("Asia/Kolkata");
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
-        
-        final Instant now = zonedDateTime.toInstant();
+        final Instant now = Instant.now();
         return JWT.create()
                 .withSubject(userDetails.getUsername())
                 .withIssuer("app")
