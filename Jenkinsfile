@@ -35,11 +35,15 @@ pipeline {
         stage ('Run Docker Compose') {
             steps {
                 script {
-                    bat 'rmdir .terraform'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+                        bat 'rmdir .terraform'
+                    }
+                    
                 }
-
                 script {
-                    bat 'del .terraform.*'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+                        bat 'del .terraform.*'
+                    }
                 }
                 script {
                     bat 'terraform init'
