@@ -32,10 +32,21 @@ pipeline {
                 }
             }
         }
-        stage ('Run Docker image') {
+        stage ('Run Docker Compose') {
             steps {
                 script {
-                    bat 'docker-compose -p %city% up -d'
+                    bat 'rmdir .terraform'
+                }
+
+                script {
+                    bat 'del .terraform.*'
+                }
+                script {
+                    bat 'terraform init'
+                }
+
+                script {
+                    bat 'terraform apply --var "city=%city%" --auto-approve'
                 }
             }
         }
