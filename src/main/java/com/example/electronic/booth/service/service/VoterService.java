@@ -14,7 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -53,6 +55,21 @@ public class VoterService implements VoterInterface {
 
     @Value("${VOTE_TOKEN_PASS}")
     String votePassword;
+
+    @Value("${PRODUCER_USERNAME}")
+    String emailUsername;
+
+    @Value("${PRODUCER_PASSWORD}")
+    String emailPassword;
+
+    @Value("${PRODUCER_TOKEN_URL}")
+    String producerTokenUrl;
+
+    @Value("${PRODUCER_EMAIL_URL}")
+    String producerEmailUrl;
+
+    @Value("${NOMINEE_GET_URL}")
+    String nomineeGetUrl;
     UserRepository userRepository;
     RestTemplate restTemplate;
 
@@ -90,8 +107,36 @@ public class VoterService implements VoterInterface {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(request, httpHeaders);
         Response response = restTemplate.exchange(blockChainURL, HttpMethod.POST, httpEntity, Response.class).getBody();
+        if (response.getStatus() == 200) {
+            String emailToken = getEmailToken();
+            HttpHeaders emailHeaders = new HttpHeaders();
+            emailHeaders.setContentType(MediaType.APPLICATION_JSON);
+            emailHeaders.add("Authorization", "Bearer " + emailToken);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+            User user = userRepository.findByEmailId(vote.getEmailId());
+            Date d = new Date();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
+
+            String masterToken = getToken();
+            HttpHeaders masterHeaders = new HttpHeaders();
+            masterHeaders.setContentType(MediaType.APPLICATION_JSON);
+            masterHeaders.add("Authorization", "Bearer " + masterToken);
+            HttpEntity<String> masterEntity = new HttpEntity<>(masterHeaders);
+
+            ResponseEntity<Response> responseEntity = restTemplate.exchange(nomineeGetUrl + "?id=" + vote.getCandidateId(), HttpMethod.GET, masterEntity, Response.class);
+            Object obj = responseEntity.getBody().getObj();
+            Nominee nominee = objectMapper.readValue(objectMapper.writeValueAsString(obj), Nominee.class);
+            Email email = new Email(vote.getEmailId(), user.getName(), nominee.getName(), nominee.getParty(), simpleDateFormat.format(d), user.getState(), user.getCity());
+
+            HttpEntity<String> emailEntity = new HttpEntity<>(objectMapper.writeValueAsString(email), emailHeaders);
+
+            ResponseEntity<Void> emailResponse = restTemplate.exchange(producerEmailUrl, HttpMethod.POST, emailEntity, Void.class);
+            if (emailResponse.getStatusCode() == HttpStatus.OK) {
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }
+
+        }
+        return new ResponseEntity<>(new Response("Error occurred", 400), HttpStatus.BAD_REQUEST);
     }
 
     public List<Vote> getVotes() throws JsonProcessingException {
@@ -204,5 +249,18 @@ public class VoterService implements VoterInterface {
         }
         userRepository.save(n);
         return new ResponseEntity<>(viewVoters().getBody(), HttpStatus.OK);
+    }
+
+    public String getEmailToken() throws JsonProcessingException {
+        LoginRequest login = new LoginRequest(emailUsername, emailPassword, "ROLE_VOTER");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String request = objectMapper.writeValueAsString(login);
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(request, httpHeaders);
+        ResponseEntity<Response> responseEntity = restTemplate.exchange(producerTokenUrl, HttpMethod.POST, httpEntity, Response.class);
+        return responseEntity.getBody().getObj().toString();
     }
 }
