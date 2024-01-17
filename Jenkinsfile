@@ -42,7 +42,12 @@ pipeline {
                 }
                 script {
                     catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
-                        bat 'del .terraform.*'
+                        bat 'del .terraform.lock.hcl'
+                    }
+                }
+                script {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+                        bat 'del terraform.tfstate'
                     }
                 }
                 script {
