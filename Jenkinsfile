@@ -36,7 +36,7 @@ pipeline {
             steps {
                 script {
                     catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
-                        bat 'rmdir .terraform'
+                        bat 'rmdir /s /q .terraform'
                     }
                     
                 }
