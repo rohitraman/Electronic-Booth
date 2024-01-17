@@ -21,6 +21,9 @@ services:
         - NOMINEE_VOTE_TOKEN_URL=http://host.docker.internal:5790/authenticate
         - NOMINEE_TOKEN_URL=http://host.docker.internal:5792/authenticate
         - ADMIN_VIEW_NOMINEES=http://host.docker.internal:5792/nominee/getNomineeByCity
+        - NOMINEE_GET_URL=http://host.docker.internal:5792/nominee/getNomineeById
+        - PRODUCER_EMAIL_URL=http://host.docker.internal:5794/kafka/publish
+        - PRODUCER_TOKEN_URL=http://host.docker.internal:5794/authenticate
       networks:
       - service-tier
       restart: on-failure
