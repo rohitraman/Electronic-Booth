@@ -107,12 +107,13 @@ public class VoterService implements VoterInterface {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(request, httpHeaders);
         Response response = restTemplate.exchange(blockChainURL, HttpMethod.POST, httpEntity, Response.class).getBody();
+        System.out.println(response.getStatus());
         if (response.getStatus() == 200) {
             String emailToken = getEmailToken();
             HttpHeaders emailHeaders = new HttpHeaders();
             emailHeaders.setContentType(MediaType.APPLICATION_JSON);
             emailHeaders.add("Authorization", "Bearer " + emailToken);
-
+            
             User user = userRepository.findByEmailId(vote.getEmailId());
             Date d = new Date();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
@@ -124,6 +125,7 @@ public class VoterService implements VoterInterface {
             HttpEntity<String> masterEntity = new HttpEntity<>(masterHeaders);
 
             ResponseEntity<Response> responseEntity = restTemplate.exchange(nomineeGetUrl + "?id=" + vote.getCandidateId(), HttpMethod.GET, masterEntity, Response.class);
+            System.out.println(responseEntity);
             Object obj = responseEntity.getBody().getObj();
             Nominee nominee = objectMapper.readValue(objectMapper.writeValueAsString(obj), Nominee.class);
             Email email = new Email(vote.getEmailId(), user.getName(), nominee.getName(), nominee.getParty(), simpleDateFormat.format(d), user.getState(), user.getCity());
@@ -131,6 +133,7 @@ public class VoterService implements VoterInterface {
             HttpEntity<String> emailEntity = new HttpEntity<>(objectMapper.writeValueAsString(email), emailHeaders);
 
             ResponseEntity<Void> emailResponse = restTemplate.exchange(producerEmailUrl, HttpMethod.POST, emailEntity, Void.class);
+            System.out.println(emailEntity);
             if (emailResponse.getStatusCode() == HttpStatus.OK) {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }
@@ -220,6 +223,7 @@ public class VoterService implements VoterInterface {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(request, httpHeaders);
         ResponseEntity<Response> responseEntity = restTemplate.exchange(voteTokenUrl, HttpMethod.POST, httpEntity, Response.class);
+        System.out.println(responseEntity.getBody().getObj().toString());
         return responseEntity.getBody().getObj().toString();
     }
 
@@ -261,6 +265,7 @@ public class VoterService implements VoterInterface {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(request, httpHeaders);
         ResponseEntity<Response> responseEntity = restTemplate.exchange(producerTokenUrl, HttpMethod.POST, httpEntity, Response.class);
+        System.out.println(responseEntity.getBody().getObj().toString());
         return responseEntity.getBody().getObj().toString();
     }
 }
