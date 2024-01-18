@@ -65,7 +65,6 @@ public class VoterController {
             return new ResponseEntity<>(new Response("Unauthorized", 401), HttpStatus.UNAUTHORIZED);
         }
         ResponseEntity<Response> responseEntity = voterInterface.getNomineesByCity(city);
-        System.out.println(responseEntity.getStatusCode() + " " + responseEntity.getBody().toString());
         return responseEntity;
     }
 
