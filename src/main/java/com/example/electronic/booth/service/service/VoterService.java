@@ -226,6 +226,7 @@ public class VoterService implements VoterInterface {
     @Override
     public ResponseEntity<Response> updateVoter(Integer voterId, UserRequest userRequest) {
         User n = userRepository.findById(voterId).get();
+        Login l = loginRepository.findByUserName(n.getEmailId());
         if (userRequest.getCity() != null && !userRequest.getCity().isEmpty()) {
             n.setCity(userRequest.getCity());
         }
@@ -237,6 +238,8 @@ public class VoterService implements VoterInterface {
         }
         if (userRequest.getEmailId() != null && !userRequest.getEmailId().isEmpty()) {
             n.setEmailId(userRequest.getEmailId());
+            l.setUserName(userRequest.getEmailId());
+            loginRepository.save(l);
         }
         if (userRequest.getImage() != null && !userRequest.getImage().isEmpty()) {
             n.setImage(userRequest.getImage());
