@@ -9,7 +9,15 @@ pipeline {
                 }
             }
         }
-
+        stage('Remove old Docker image') {
+            steps {
+                script {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+                        bat 'docker rmi booth-backend'
+                    }
+                }
+            }
+        }
         stage('Build Docker image') {
             steps {
                 script {
