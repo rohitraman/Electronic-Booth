@@ -2,29 +2,6 @@ pipeline {
     agent any
     
     stages {
-        stage('Build') {
-            steps {
-                script {
-                    bat 'mvn clean package'
-                }
-            }
-        }
-        stage('Remove old Docker image') {
-            steps {
-                script {
-                    catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
-                        bat 'docker rmi booth-backend'
-                    }
-                }
-            }
-        }
-        stage('Build Docker image') {
-            steps {
-                script {
-                    bat 'docker build -t booth-backend .'
-                }
-            }
-        }
         stage ('Update .env') {
             steps {
                 script {
