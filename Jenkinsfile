@@ -2,6 +2,21 @@ pipeline {
     agent any
     
     stages {
+        stage('Build') {
+            steps {
+                script {
+                    bat 'mvn clean package'
+                }
+            }
+        }
+        
+        stage('Build Docker image') {
+            steps {
+                script {
+                    bat 'docker build -t booth-backend .'
+                }
+            }
+        }
         stage ('Update .env') {
             steps {
                 script {
