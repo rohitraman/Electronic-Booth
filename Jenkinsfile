@@ -10,13 +10,6 @@ pipeline {
             }
         }
         
-        stage('Build Docker image') {
-            steps {
-                script {
-                    bat 'docker build -t booth-backend .'
-                }
-            }
-        }
         stage ('Update .env') {
             steps {
                 script {
@@ -29,6 +22,13 @@ pipeline {
 
                 script {
                     bat "echo CONTAINER_PORT=%port% >> .env" 
+                }
+            }
+        }
+        stage('Build Docker image') {
+            steps {
+                script {
+                    bat 'docker build -t booth-backend .'
                 }
             }
         }
